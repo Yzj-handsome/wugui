@@ -217,6 +217,23 @@
     if (p === '/api/auth/login') {
       const u = {
         id: 'demo-user',
+        nickname: (body && (body.nickname || body.real_name || body.account)) || '演示同学',
+        real_name: (body && body.real_name) || '演示同学',
+        phone: (body && (body.phone || (String(body.account || '').match(/^1[3-9]\d{9}$/) ? body.account : ''))) || '13900000000',
+        qq: (body && body.qq) || null,
+        wechat: (body && body.wechat) || null,
+        email: (body && body.email) || 'demo@whu.edu.cn',
+        role: 'student', verified: true, student_bound: true,
+        avatar_url: null, login_at: Date.now(),
+      };
+      localStorage.setItem(USER_KEY, JSON.stringify(u));
+      return json({ logged_in: true, id: u.id, nickname: u.nickname, role: 'student',
+                    verified: true, registered: true, demo: true });
+    }
+    if (p === '/api/auth/register') {
+      // 静态演示：注册直接放行，并把资料记进本地（刷新后仍在）
+      const u = {
+        id: 'demo-user',
         nickname: (body && (body.nickname || body.real_name)) || '演示同学',
         real_name: (body && body.real_name) || '演示同学',
         phone: (body && body.phone) || '13900000000',

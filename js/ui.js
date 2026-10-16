@@ -163,6 +163,41 @@ export function maskPhone(value) {
   return v.length === 11 ? `${v.slice(0, 3)}****${v.slice(7)}` : v;
 }
 
+/* ---------------- 表单字段规则（登录/注册、发布页共用） ---------------- */
+
+export const REG_RULES = {
+  phone: (v) => /^1[3-9]\d{9}$/.test(v) || '手机号格式不正确（11 位数字，1 开头）',
+  real_name: (v) => /^[\u4e00-\u9fa5A-Za-z][\u4e00-\u9fa5A-Za-z·]{1,19}$/.test(v)
+    || '请填 2-20 个中文或字母',
+  student_id: (v) => /^[0-9A-Za-z]{6,20}$/.test(v) || '请填 6-20 位数字或字母',
+  password: (v) => (v && v.length >= 6 && v.length <= 32 && !/\s/.test(v))
+    || '密码 6-32 位，不能有空格',
+  qq: (v) => !v || /^[1-9]\d{4,11}$/.test(v) || 'QQ 号格式不正确（5-12 位数字）',
+  wechat: (v) => !v || /^[A-Za-z][-_A-Za-z0-9]{5,19}$/.test(v) || '微信号以字母开头，6-20 位',
+  email: (v) => !v || /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(v) || '邮箱格式不正确',
+};
+
+/* 带「必填 / 选填」标签与行内错误提示的表单字段 */
+export function regField(labelText, input, hint, required = false, full = false) {
+  const err = h('div', { class: 'form-err', hidden: true });
+  input.addEventListener('input', () => {
+    err.hidden = true;
+    input.classList.remove('input--err');
+  });
+  const box = h('div', { class: `form-field${full ? ' form-field--full' : ''}` },
+    h('label', {}, labelText,
+      h('span', { class: required ? 'req' : 'opt' }, required ? '必填' : '选填')),
+    input, err,
+    hint ? h('div', { class: 'form-hint' }, hint) : null);
+  box.setErr = (msg) => {
+    if (!msg) return;
+    err.textContent = msg;
+    err.hidden = false;
+    input.classList.add('input--err');
+  };
+  return box;
+}
+
 export function select(options, value, onChange, placeholder) {
   const el = h('select', { class: 'select' });
   if (placeholder) el.append(h('option', { value: '' }, placeholder));

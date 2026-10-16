@@ -33,6 +33,7 @@ export const api = {
   config: () => request('/api/config'),
   whoami: () => request('/api/auth/me'),
   login: (payload) => request('/api/auth/login', { method: 'POST', body: payload }),
+  register: (payload) => request('/api/auth/register', { method: 'POST', body: payload }),
   logout: () => request('/api/auth/logout', { method: 'POST' }),
   users: () => request('/api/auth/users'),
 
