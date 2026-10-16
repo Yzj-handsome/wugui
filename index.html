@@ -8,13 +8,14 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./css/app.css" />
   <script>
-    /* 深色是默认主题。这段必须放在 CSS 之前执行，否则首屏会白闪一下。 */
+    /* 亮色是默认主题；用户手动切过就按 localStorage 来。
+       这段必须放在 CSS 之前执行，否则首屏会闪一下。 */
     (function () {
       try {
         var saved = localStorage.getItem('wugui-theme');
-        document.documentElement.dataset.theme = saved === 'light' ? '' : 'dark';
+        document.documentElement.dataset.theme = saved === 'dark' ? 'dark' : '';
       } catch (e) {
-        document.documentElement.dataset.theme = 'dark';
+        document.documentElement.dataset.theme = '';
       }
     })();
   </script>

@@ -276,10 +276,10 @@ function initAgentFab() {
 /* ---------------- 主题 ---------------- */
 
 function initTheme() {
-  // 深色是默认主题；用户手动切换过就按 localStorage 来。
-  // （HTML 里还有一段内联脚本做同样的事，避免首屏白闪。）
+  // 亮色是默认主题；用户手动切换过就按 localStorage 来。
+  // （HTML 里还有一段内联脚本做同样的事，避免首屏闪烁。）
   const saved = localStorage.getItem('wugui-theme');
-  document.documentElement.dataset.theme = saved === 'light' ? '' : 'dark';
+  document.documentElement.dataset.theme = saved === 'dark' ? 'dark' : '';
   document.getElementById('themeBtn').addEventListener('click', () => {
     const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next === 'dark' ? 'dark' : '';
