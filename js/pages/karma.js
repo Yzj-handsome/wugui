@@ -1,8 +1,8 @@
 /* 积分中心：Karma 积分 + 信用分 + 排行榜 + 积分兑换 */
 
-import { api } from '../api.js?v=202610171035';
-import { h, icon, toast, emptyState } from '../ui.js?v=202610171035';
-import { state } from '../app.js?v=202610171035';
+import { api } from '../api.js?v=202610171048';
+import { h, icon, toast, emptyState } from '../ui.js?v=202610171048';
+import { state } from '../app.js?v=202610171048';
 
 export async function renderKarma(main) {
   const wrap = h('div', { class: 'wrap wrap--narrow' });
