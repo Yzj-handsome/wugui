@@ -1,19 +1,19 @@
 /* 应用外壳：路由、导航、主题、智能体浮层。
    路由用 hash（`#/items/xxx`），后端对任何路径都返回 index.html。 */
 
-import { api, streamPreview } from './api.js?v=202610171027';
-import { h, toast, campusArt, maskPhone } from './ui.js?v=202610171027';
-import { renderHome } from './pages/home.js?v=202610171027';
-import { renderPost } from './pages/post.js?v=202610171027';
-import { renderItem } from './pages/item.js?v=202610171027';
-import { renderClaim } from './pages/claim.js?v=202610171027';
-import { renderInbox } from './pages/inbox.js?v=202610171027';
-import { renderMe } from './pages/me.js?v=202610171027';
-import { renderAdmin } from './pages/admin.js?v=202610171027';
-import { renderLogin, renderRegister } from './pages/auth.js?v=202610171027';
-import { renderHall } from './pages/hall.js?v=202610171027';
-import { renderMap } from './pages/map.js?v=202610171027';
-import { renderKarma } from './pages/karma.js?v=202610171027';
+import { api, streamPreview } from './api.js?v=202610171035';
+import { h, toast, campusArt, maskPhone } from './ui.js?v=202610171035';
+import { renderHome } from './pages/home.js?v=202610171035';
+import { renderPost } from './pages/post.js?v=202610171035';
+import { renderItem } from './pages/item.js?v=202610171035';
+import { renderClaim } from './pages/claim.js?v=202610171035';
+import { renderInbox } from './pages/inbox.js?v=202610171035';
+import { renderMe } from './pages/me.js?v=202610171035';
+import { renderAdmin } from './pages/admin.js?v=202610171035';
+import { renderLogin, renderRegister } from './pages/auth.js?v=202610171035';
+import { renderHall } from './pages/hall.js?v=202610171035';
+import { renderMap } from './pages/map.js?v=202610171035';
+import { renderKarma } from './pages/karma.js?v=202610171035';
 
 export const state = {
   user: null,

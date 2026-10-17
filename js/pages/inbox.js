@@ -1,8 +1,8 @@
 /* 消息中心：站内通知 + 站内安全会话（联系方式需双方同意才交换） */
 
-import { api } from '../api.js?v=202610171027';
-import { h, icon, toast, fmtTime, emptyState } from '../ui.js?v=202610171027';
-import { state } from '../app.js?v=202610171027';
+import { api } from '../api.js?v=202610171035';
+import { h, icon, toast, fmtTime, emptyState } from '../ui.js?v=202610171035';
+import { state } from '../app.js?v=202610171035';
 
 const TYPE_META = {
   match_high: { icon: 'sparkle', label: '高度相似' },
