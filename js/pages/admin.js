@@ -2,10 +2,10 @@
    设计原则：先给结论、再给证据、细节收进折叠区。
    四个核心指标 → 发布与找回 → 认领与安全 → 校园分布 → （折叠）系统细节 */
 
-import { api } from '../api.js?v=202610171035';
+import { api } from '../api.js?v=202610171048';
 import {
   h, mount, icon, lineChart, funnelChart, heatmap, legend, fmtPercent, emptyState,
-} from '../ui.js?v=202610171035';
+} from '../ui.js?v=202610171048';
 
 export async function renderAdmin(main) {
   const wrap = h('div', { class: 'wrap' });
