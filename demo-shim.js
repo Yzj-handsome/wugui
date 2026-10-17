@@ -354,7 +354,17 @@
     // —— 其它：一律 OK，避免演示时弹错误 ——
     if (p === '/api/me/karma') {
       return json({
-        points: 5, level: 1, title: '珞珈新芽', next_at: 20,
+        points: 5, earned: 5, spent: 0, level: 1, title: '珞珈新芽', next_at: 20,
+        credit: {
+          score: 78, band: '良好',
+          notes: ['基础分 40', '已完成实名 +10', '学号已绑定 +10', '邮箱已认证 +15'],
+        },
+        catalog: [
+          { id: 'print9', title: '打印店 9 折券', cost: 20, desc: '校门口文印中心，单次可用', redeemed: false },
+          { id: 'coffee', title: '咖啡买一送一', cost: 30, desc: '珞珈咖啡（梅园店）', redeemed: false },
+          { id: 'stationery', title: '文具礼包', cost: 50, desc: '笔记本 + 中性笔一支', redeemed: false },
+          { id: 'badge', title: '珞珈守护者徽章', cost: 80, desc: '限量金属徽章', redeemed: false },
+        ],
         breakdown: [
           { label: '发布线索', count: 5, points: 5 },
           { label: '信息填写完整', count: 0, points: 0 },

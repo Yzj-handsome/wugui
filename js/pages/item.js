@@ -1,10 +1,10 @@
 /* 详情页：对方物品与我的描述左右对比，按钮「这是我的」（§11.2） */
 
-import { api } from '../api.js';
+import { api } from '../api.js?v=202610171027';
 import {
   h, icon, toast, matchCard, tierBadge, fmtPercent, fmtTime, sourceText, modal, contactCard,
-} from '../ui.js';
-import { state } from '../app.js';
+} from '../ui.js?v=202610171027';
+import { state } from '../app.js?v=202610171027';
 
 export async function renderItem(main, ctx) {
   const id = ctx.params[0];

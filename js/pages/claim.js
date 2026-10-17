@@ -1,8 +1,8 @@
 /* 认领页：逐题作答 → 结论 → 交接码（§9、§11.2） */
 
-import { api, compressImage } from '../api.js';
-import { h, icon, toast, field, contactCard } from '../ui.js';
-import { state } from '../app.js';
+import { api, compressImage } from '../api.js?v=202610171027';
+import { h, icon, toast, field, contactCard } from '../ui.js?v=202610171027';
+import { state } from '../app.js?v=202610171027';
 
 export async function renderClaim(main, ctx) {
   const claimId = ctx.params[0];

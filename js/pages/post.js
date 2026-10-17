@@ -6,11 +6,11 @@
  * 补充说明和照片可选投给 AI 做「补全」：只填你没填的字段，不动你写过的。
  */
 
-import { api, compressImage } from '../api.js';
+import { api, compressImage } from '../api.js?v=202610171027';
 import {
   h, icon, toast, field, select, matchCard, emptyState, sourceText, locationPicker,
-} from '../ui.js';
-import { state } from '../app.js';
+} from '../ui.js?v=202610171027';
+import { state } from '../app.js?v=202610171027';
 
 export async function renderPost(main) {
   /* 联系方式校验规则与后端 schemas.CONTACT_PATTERNS 保持一致 */

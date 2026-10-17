@@ -1,8 +1,8 @@
 /* 办事大厅：我的遗失物品发布 / 我的捡到物品发布 */
 
-import { api } from '../api.js';
-import { h, icon, emptyState, fmtTime, sourceText } from '../ui.js';
-import { state } from '../app.js';
+import { api } from '../api.js?v=202610171027';
+import { h, icon, emptyState, fmtTime, sourceText } from '../ui.js?v=202610171027';
+import { state } from '../app.js?v=202610171027';
 
 const STATUS_TEXT = {
   draft: '草稿', pending_confirm: '待确认', active: '在架', claiming: '认领中',

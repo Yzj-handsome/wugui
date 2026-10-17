@@ -1,18 +1,19 @@
 /* 应用外壳：路由、导航、主题、智能体浮层。
    路由用 hash（`#/items/xxx`），后端对任何路径都返回 index.html。 */
 
-import { api, streamPreview } from './api.js';
-import { h, toast, campusArt, maskPhone } from './ui.js';
-import { renderHome } from './pages/home.js';
-import { renderPost } from './pages/post.js';
-import { renderItem } from './pages/item.js';
-import { renderClaim } from './pages/claim.js';
-import { renderInbox } from './pages/inbox.js';
-import { renderMe } from './pages/me.js';
-import { renderAdmin } from './pages/admin.js';
-import { renderLogin, renderRegister } from './pages/auth.js';
-import { renderHall } from './pages/hall.js';
-import { renderMap } from './pages/map.js';
+import { api, streamPreview } from './api.js?v=202610171027';
+import { h, toast, campusArt, maskPhone } from './ui.js?v=202610171027';
+import { renderHome } from './pages/home.js?v=202610171027';
+import { renderPost } from './pages/post.js?v=202610171027';
+import { renderItem } from './pages/item.js?v=202610171027';
+import { renderClaim } from './pages/claim.js?v=202610171027';
+import { renderInbox } from './pages/inbox.js?v=202610171027';
+import { renderMe } from './pages/me.js?v=202610171027';
+import { renderAdmin } from './pages/admin.js?v=202610171027';
+import { renderLogin, renderRegister } from './pages/auth.js?v=202610171027';
+import { renderHall } from './pages/hall.js?v=202610171027';
+import { renderMap } from './pages/map.js?v=202610171027';
+import { renderKarma } from './pages/karma.js?v=202610171027';
 
 export const state = {
   user: null,
@@ -30,6 +31,7 @@ const routes = [
   { path: /^\/me\/?$/, render: renderMe, nav: 'home' },
   { path: /^\/hall\/?$/, render: renderHall, nav: 'hall' },
   { path: /^\/map\/?$/, render: renderMap, nav: 'map' },
+  { path: /^\/karma\/?$/, render: renderKarma, nav: 'karma' },
   { path: /^\/login\/?$/, render: renderLogin, nav: null },
   { path: /^\/register\/?$/, render: renderRegister, nav: null },
   { path: /^\/admin\/?$/, render: renderAdmin, nav: null },
