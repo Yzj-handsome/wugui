@@ -71,6 +71,7 @@ export async function renderHall(main) {
   const items = data.items || [];
   const lost = items.filter((i) => i.kind === 'lost');
   const found = items.filter((i) => i.kind === 'found');
+  const karma = await api.karma().catch(() => null);
 
   wrap.append(h('div', { class: 'hall-stats' },
     h('div', { class: 'hall-stat' },
@@ -81,6 +82,13 @@ export async function renderHall(main) {
       h('div', { class: 'hall-stat__num hall-stat__num--green' }, String(found.length)),
       h('div', { class: 'small muted' }, '我发布的捡到物品'),
       h('div', { class: 'small muted' }, '等待失主认领，交接码在消息中心')),
+    karma
+      ? h('div', { class: 'hall-stat' },
+          h('div', { class: 'hall-stat__num hall-stat__num--amber' }, String(karma.points)),
+          h('div', { class: 'small muted' }, `Karma 积分 · ${karma.title}`),
+          h('div', { class: 'small muted' },
+            karma.next_at ? `再 ${Math.max(0, karma.next_at - karma.points)} 分升级` : '已是最高称号'))
+      : null,
   ));
 
   wrap.append(section('我的遗失物品发布', '丢东西时发布在这里；匹配到候选会主动推送。',

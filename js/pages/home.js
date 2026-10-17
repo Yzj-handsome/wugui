@@ -286,7 +286,7 @@ export async function renderHome(main) {
       tree: meta.tree || [],
       groups: meta.groups || [],
       value: session.filters?.location || '',
-      onChange: (v) => setFilter({ location: v || undefined }),
+      onChange: (v) => { setFilter({ location: v || undefined }); drawRadius(); },
     });
 
     const catSel = select(catOpts, '', (v) => setFilter({ category_l1: v || undefined }), null);
@@ -295,11 +295,28 @@ export async function renderHome(main) {
       onchange: () => { panel.dataset.onlyHigh = toggle.checked ? '1' : '0'; onChange(); },
     });
 
+    /* 地理半径：选了地点之后才出现（面板不会整块重建，所以这里手动重绘） */
+    const RADII = [[0, '仅本地点'], [300, '300 米内'], [1000, '1 公里内'], [3000, '3 公里内']];
+    const radiusRow = h('div', { class: 'chips radius-chips' });
+    function drawRadius() {
+      radiusRow.innerHTML = '';
+      const loc = session.filters?.location;
+      radiusRow.hidden = !loc;
+      if (!loc) return;
+      for (const [value, label] of RADII) {
+        radiusRow.append(h('button', {
+          class: `chip${Number(session.filters.radius || 0) === value ? ' is-active' : ''}`,
+          onclick: () => { setFilter({ radius: value || undefined }); drawRadius(); },
+        }, label));
+      }
+    }
+    drawRadius();
+
     panel.append(
       h('div', { class: 'panel__title' }, icon('filter'), '筛选线索'),
       h('div', { class: 'field' }, h('label', {}, '时间范围'), daySel),
       customBox,
-      h('div', { class: 'field' }, h('label', {}, '地点'), locSel),
+      h('div', { class: 'field' }, h('label', {}, '地点'), locSel, radiusRow),
       h('div', { class: 'field' }, h('label', {}, '物品类别'), catSel),
       h('div', { class: 'switch-row' },
         h('span', { class: 'small' }, '只看高匹配'),
@@ -322,7 +339,15 @@ export async function renderHome(main) {
     const filters = { ...(session.filters || {}) };
     const params = { limit: 9, kind: session.kind === 'lost' ? 'found' : 'lost' };
     if (filters.category_l1) params.category_l1 = filters.category_l1;
-    if (filters.location) params.location = filters.location;
+    if (filters.location) {
+      if (filters.radius) {
+        // 半径搜索：以所选地点为圆心（服务端复用校园平面坐标）
+        params.near = filters.location;
+        params.radius = filters.radius;
+      } else {
+        params.location = filters.location;
+      }
+    }
     if (filters.date_from) params.date_from = filters.date_from;
     if (filters.date_to) params.date_to = filters.date_to;
 

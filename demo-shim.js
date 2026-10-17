@@ -15,6 +15,8 @@
   const enc = new TextEncoder();
   const USER_KEY = 'wugui-demo-user';
   const claims = {};                       // 认领流程的内存状态
+  const DEMO_CONVS = {};                   // 静态版会话（内存态）
+  const DEMO_MSGS = {};
 
   const json = (data, status = 200) => new Response(JSON.stringify(data), {
     status, headers: { 'Content-Type': 'application/json; charset=utf-8' },
@@ -330,8 +332,7 @@
     if (p === '/api/inbox/read' || p === '/api/inbox/deliver') return ok();
 
     // —— 看板 ——
-    if (p === '/api/admin/metrics') return json(DATA.metrics || {});
-    if (p === '/api/admin/overview') return json(DATA.overview || {});
+    if (p === '/api/admin/metrics') return json(DATA.metrics || {});    if (p === '/api/admin/overview') return json(DATA.overview || {});
     if (p === '/api/admin/models/status') return json(DATA.models || {});
     if (p === '/api/admin/field-feedback') return json(DATA.field_feedback || {});
     if (p === '/api/admin/notifications') return json({ notifications: [] });
@@ -348,6 +349,91 @@
              + (q ? `\n\n你刚才说的是：「${q}」` : ''),
         matches: [], draft: null, demo: true,
       });
+    }
+
+    // —— 其它：一律 OK，避免演示时弹错误 ——
+    if (p === '/api/me/karma') {
+      return json({
+        points: 5, level: 1, title: '珞珈新芽', next_at: 20,
+        breakdown: [
+          { label: '发布线索', count: 5, points: 5 },
+          { label: '信息填写完整', count: 0, points: 0 },
+          { label: '顺利完成归还', count: 0, points: 0 },
+          { label: '认领并通过验证', count: 0, points: 0 },
+        ], demo: true,
+      });
+    }
+
+    // 校园邮箱（静态演示：验证码固定 123456）
+    if (p === '/api/auth/email/send') {
+      const mail = String((body && body.email) || '');
+      return json({ sent: true, email: mail, demo_code: '123456', expires_in: 600,
+                    campus: mail.endsWith('@whu.edu.cn'), demo: true });
+    }
+    if (p === '/api/auth/email/verify') {
+      const u = currentUser() || {};
+      u.email_verified = true;
+      localStorage.setItem(USER_KEY, JSON.stringify(u));
+      return json({ ok: true, email: u.email || '', campus: true, demo: true });
+    }
+
+    // 拍照自动填表（静态版给一条预置建议）
+    if (p === '/api/items/suggest') {
+      return json({ title: '白色蓝牙耳机', category_l1: '电子产品', category_l2: '耳机',
+                    colors: ['白'], material: null, public_marks: [], ocr_text: [],
+                    low_conf: [], engine: 'demo', demo: true });
+    }
+
+    // 站内会话（内存态，刷新即清空）
+    if (p === '/api/conversations') {
+      if (method === 'GET') {
+        const list = Object.values(DEMO_CONVS).sort((a, b) => String(b.last_at).localeCompare(String(a.last_at)));
+        return json({ conversations: list, demo: true });
+      }
+      const item = (DATA.items || []).find((i) => i.id === (body && body.item_id)) || {};
+      const id = 'demo-conv-1';
+      if (!DEMO_CONVS[id]) {
+        DEMO_CONVS[id] = {
+          id,
+          item: { id: item.id, title: item.title || '物品', cover_url: item.cover_url, kind: item.kind || 'found' },
+          other: { id: 'demo-owner', nickname: '演示同学', avatar_url: null },
+          unread: 0, last_message: '你好，这条线索是我发布的，有什么想确认的可以直接问我。',
+          last_at: new Date().toISOString(), my_share: false, other_share: false,
+        };
+        DEMO_MSGS[id] = [{
+          id: 'm1', mine: false, sender: { nickname: '演示同学' },
+          body: '你好，这条线索是我发布的，有什么想确认的可以直接问我。',
+          created_at: new Date().toISOString(),
+        }];
+      }
+      return json(DEMO_CONVS[id]);
+    }
+    const mConv = p.match(/^\/api\/conversations\/([\w-]+)$/);
+    if (mConv && method === 'GET') {
+      const c = DEMO_CONVS[mConv[1]];
+      if (!c) return json({ detail: '会话不存在' }, 404);
+      return json({ conversation: c, messages: DEMO_MSGS[mConv[1]] || [], demo: true });
+    }
+    if (/^\/api\/conversations\/[\w-]+\/messages$/.test(p) && method === 'POST') {
+      const cid = p.split('/')[3];
+      const c = DEMO_CONVS[cid];
+      if (c) {
+        DEMO_MSGS[cid] = DEMO_MSGS[cid] || [];
+        DEMO_MSGS[cid].push({
+          id: 'm' + Date.now(), mine: true,
+          sender: { nickname: (currentUser() || {}).nickname || '我' },
+          body: (body && body.body) || '', created_at: new Date().toISOString(),
+        });
+        c.last_message = (body && body.body) || '';
+        c.last_at = new Date().toISOString();
+      }
+      return json({ ok: true, demo: true });
+    }
+    if (/^\/api\/conversations\/[\w-]+\/share$/.test(p)) {
+      const cid = p.split('/')[3];
+      const c = DEMO_CONVS[cid];
+      if (c) c.my_share = !!(body && body.value);
+      return json(c || { ok: true, demo: true });
     }
 
     // —— 其它：一律 OK，避免演示时弹错误 ——

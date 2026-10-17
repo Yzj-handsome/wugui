@@ -63,6 +63,21 @@ export const api = {
   markRead: (id) => request('/api/inbox/read', { method: 'POST', body: { id } }),
   deliver: () => request('/api/inbox/deliver', { method: 'POST' }),
 
+  /* 站内安全消息 */
+  conversations: () => request('/api/conversations'),
+  openConversation: (itemId, otherId) =>
+    request('/api/conversations', { method: 'POST', body: { item_id: itemId, other_id: otherId } }),
+  conversation: (id) => request(`/api/conversations/${id}`),
+  sendMessage: (id, body) => request(`/api/conversations/${id}/messages`, { method: 'POST', body: { body } }),
+  shareContact: (id, value) => request(`/api/conversations/${id}/share`, { method: 'POST', body: { value } }),
+
+  /* Karma / 邮箱验证 / 照片识别 */
+  karma: () => request('/api/me/karma'),
+  emailSend: (email) => request('/api/auth/email/send', { method: 'POST', body: { email } }),
+  emailVerify: (code) => request('/api/auth/email/verify', { method: 'POST', body: { code } }),
+  suggestFromPhotos: (imageKeys) =>
+    request('/api/items/suggest', { method: 'POST', body: { image_keys: imageKeys } }),
+
   chat: (message, context, history) =>
     request('/api/agent/chat', { method: 'POST', body: { message, context: context || {}, history: history || [] } }),
   importChat: (text) => request('/api/ingest/import', { method: 'POST', body: { text } }),

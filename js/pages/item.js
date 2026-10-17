@@ -47,6 +47,20 @@ export async function renderItem(main, ctx) {
   if (item.kind === 'found' && !isMine) {
     actions.append(h('button', { class: 'btn btn--primary btn--lg', onclick: startClaim }, '这是我的 →'));
   }
+  /* 站内安全消息：不用先给手机号，先聊 */
+  if (!isMine) {
+    actions.append(h('button', {
+      class: 'btn',
+      onclick: async () => {
+        if (!state.user) { toast('登录后才能联系对方', 'err'); location.hash = '#/login'; return; }
+        try {
+          const conv = await api.openConversation(item.id);
+          sessionStorage.setItem('wugui-open-conv', conv.id);
+          location.hash = '#/inbox';
+        } catch (err) { toast(err.message, 'err'); }
+      },
+    }, '联系发布者（站内消息）'));
+  }
   if (isMine) {
     actions.append(
       h('button', { class: 'btn', onclick: () => showClaims(item) }, '谁在认领（查看问答）'),

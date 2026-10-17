@@ -234,6 +234,47 @@ export async function renderPost(main) {
     const nextBtn = h('button', { class: 'btn btn--primary btn--lg', onclick: () => runParse(false) },
       '下一步：预览发布 →');
 
+    /* 拍照自动填表：只给照片，让系统反推类别/颜色/材质/特征/文字 */
+    const photoFillBtn = h('button', {
+      class: 'btn btn--sm',
+      onclick: async () => {
+        if (!session.images.length) { toast('请先上传照片', 'err'); return; }
+        photoFillBtn.disabled = true;
+        const old = photoFillBtn.textContent;
+        photoFillBtn.textContent = '正在识别照片…';
+        try {
+          const r = await api.suggestFromPhotos(session.images);
+          const filled = [];
+          if (!f.category_l1 && r.category_l1) {
+            f.category_l1 = r.category_l1;
+            f.category_l2 = r.category_l2 || '';
+            filled.push('类别');
+          }
+          if (!f.colors.length && !f.customColor && (r.colors || []).length) {
+            f.colors = r.colors.slice(0, 3);
+            filled.push('颜色');
+          }
+          if (!f.material && r.material) { f.material = r.material; filled.push('材质'); }
+          if (!f.public_marks && (r.public_marks || []).length) {
+            f.public_marks = r.public_marks.join('；');
+            filled.push('显著特征');
+          }
+          if (!f.note && (r.ocr_text || []).length) {
+            f.note = `图片上识别到文字：${r.ocr_text.join('、')}`;
+            filled.push('补充说明');
+          }
+          if (filled.length) toast(`已从照片填上：${filled.join('、')}，请核对`, 'ok');
+          else toast('照片没识别出新字段，可以手动补充', '');
+          step1();
+        } catch (err) {
+          toast(err.message, 'err');
+        } finally {
+          photoFillBtn.disabled = false;
+          photoFillBtn.textContent = old;
+        }
+      },
+    }, '📷 从照片自动填表');
+
     body.innerHTML = '';
     body.append(
       h('h2', { class: 'section-title' }, '填写信息'),
@@ -254,6 +295,8 @@ export async function renderPost(main) {
         h('div', { class: 'form-divider form-field--full' }, '照片'),
         zone,
         thumbs,
+        h('div', { class: 'row', style: 'margin-top:10px' }, photoFillBtn,
+          h('span', { class: 'small muted' }, '上传后可以让系统自动识别，省去手填')),
         h('div', { class: 'form-note' }, icon('shield'),
           '照片会被 AI 分析；人脸、证件号与隐藏特征区域会先打码再公开。'),
         h('div', { class: 'row row--between', style: 'margin-top:6px' },

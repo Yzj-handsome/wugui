@@ -89,7 +89,11 @@ export const fmtPercent = (v) => `${Math.round((v || 0) * 100)}%`;
 
 export function fmtTime(value) {
   if (!value) return '';
-  const d = new Date(value);
+  // 后端存的是「无时区的 UTC」，浏览器会当成本地时间解析（差 8 小时）。
+  // 没有时区标记的字符串统一补一个 Z。
+  const text = String(value);
+  const iso = /(Z|[+-]\d{2}:?\d{2})$/.test(text) ? text : `${text}Z`;
+  const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return '';
   const diff = (Date.now() - d.getTime()) / 1000;
   if (diff < 60) return '刚刚';
