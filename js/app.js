@@ -12,6 +12,7 @@ import { renderMe } from './pages/me.js';
 import { renderAdmin } from './pages/admin.js';
 import { renderLogin, renderRegister } from './pages/auth.js';
 import { renderHall } from './pages/hall.js';
+import { renderMap } from './pages/map.js';
 
 export const state = {
   user: null,
@@ -28,6 +29,7 @@ const routes = [
   { path: /^\/inbox\/?$/, render: renderInbox, nav: 'inbox' },
   { path: /^\/me\/?$/, render: renderMe, nav: 'home' },
   { path: /^\/hall\/?$/, render: renderHall, nav: 'hall' },
+  { path: /^\/map\/?$/, render: renderMap, nav: 'map' },
   { path: /^\/login\/?$/, render: renderLogin, nav: null },
   { path: /^\/register\/?$/, render: renderRegister, nav: null },
   { path: /^\/admin\/?$/, render: renderAdmin, nav: null },

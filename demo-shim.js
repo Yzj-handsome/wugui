@@ -436,6 +436,14 @@
       return json(c || { ok: true, demo: true });
     }
 
+    // —— 地图 / 排行榜 / 兑换（静态版用预置数据） ——
+    if (p === '/api/map') return json(DATA.map || { points: [], total: 0, hotspots: [] });
+    if (p === '/api/leaderboard') return json(DATA.leaderboard || { leaders: [] });
+    if (p === '/api/me/redeem') {
+      return json({ ok: true, code: 'WUGUI-DEMO-00001', points_left: 5,
+                    item: { id: (body && body.id) || '', title: '演示兑换券' }, demo: true });
+    }
+
     // —— 其它：一律 OK，避免演示时弹错误 ——
     return ok();
   };

@@ -73,6 +73,9 @@ export const api = {
 
   /* Karma / 邮箱验证 / 照片识别 */
   karma: () => request('/api/me/karma'),
+  map: (query = '') => request(`/api/map${query ? `?${query}` : ''}`),
+  leaderboard: () => request('/api/leaderboard'),
+  redeem: (id) => request('/api/me/redeem', { method: 'POST', body: { id } }),
   emailSend: (email) => request('/api/auth/email/send', { method: 'POST', body: { email } }),
   emailVerify: (code) => request('/api/auth/email/verify', { method: 'POST', body: { code } }),
   suggestFromPhotos: (imageKeys) =>

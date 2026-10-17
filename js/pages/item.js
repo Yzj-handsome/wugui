@@ -61,6 +61,11 @@ export async function renderItem(main, ctx) {
       },
     }, '联系发布者（站内消息）'));
   }
+  /* 一键海报：带二维码，发群 / 朋友圈 */
+  actions.append(h('button', {
+    class: 'btn',
+    onclick: () => window.open(`/api/items/${item.id}/poster`, '_blank'),
+  }, '生成长图海报'));
   if (isMine) {
     actions.append(
       h('button', { class: 'btn', onclick: () => showClaims(item) }, '谁在认领（查看问答）'),

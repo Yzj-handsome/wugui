@@ -54,32 +54,71 @@ export async function renderMe(main) {
       h('button', { class: 'btn btn--sm', onclick: () => { location.hash = '#/hall'; } }, '办事大厅')),
   );
 
-  /* ---------- Karma ---------- */
+  /* ---------- 信用分 + 排行榜 + 积分兑换 ---------- */
   api.karma().then((k) => {
     karmaBox.innerHTML = '';
-    karmaBox.append(h('div', { class: 'panel' },
-      h('div', { class: 'row row--between' },
+    const credit = k.credit || { score: 0, band: '', notes: [] };
+    const catalog = k.catalog || [];
+    const list = h('div', { class: 'catalog' });
+    for (const c of catalog) {
+      list.append(h('div', { class: 'catalog__row' },
         h('div', {},
-          h('div', { class: 'row', style: 'gap:10px' },
-            h('span', { class: 'karma-points' }, String(k.points)),
-            h('span', { class: 'small muted' }, '积分')),
-          h('div', { class: 'row', style: 'margin-top:4px' },
-            h('span', { class: 'chip' }, k.title),
-            h('span', { class: 'small muted' },
-              k.next_at ? `再 ${Math.max(0, k.next_at - k.points)} 分升级` : '已是最高称号'))),
-        h('span', { class: 'karma-badge' }, `Lv.${k.level}`)),
+          h('div', { class: 'strong small' }, c.title),
+          h('div', { class: 'small muted' }, `${c.desc} · ${c.cost} 分`)),
+        c.redeemed
+          ? h('span', { class: 'chip chip--muted' }, '已兑换')
+          : h('button', {
+              class: 'btn btn--sm',
+              disabled: k.points < c.cost,
+              onclick: async () => {
+                try {
+                  const r = await api.redeem(c.id);
+                  toast(`兑换成功！券码 ${r.code}`, 'ok');
+                  location.reload();
+                } catch (err) { toast(err.message, 'err'); }
+              },
+            }, k.points >= c.cost ? '兑换' : `差 ${c.cost - k.points} 分`)));
+    }
+    karmaBox.append(h('div', { class: 'panel stack' },
+      h('div', { class: 'row row--between' },
+        h('div', { class: 'row', style: 'gap:10px' },
+          h('span', { class: 'karma-points' }, String(k.points)),
+          h('span', { class: 'small muted' }, '可用积分')),
+        h('span', { class: 'karma-badge' }, `Lv.${k.level} · ${k.title}`)),
       h('div', { class: 'karma-bar' },
         h('div', {
           class: 'karma-bar__fill',
           style: `width:${k.next_at ? Math.min(100, Math.round((k.points / k.next_at) * 100)) : 100}%`,
         })),
-      h('div', { class: 'chips', style: 'margin-top:12px' },
-        (k.breakdown || []).filter((b) => b.count > 0).map((b) =>
-          h('span', { class: 'chip chip--muted' }, `${b.label} ×${b.count}（+${b.points}）`)),
-      ),
-      h('div', { class: 'form-hint', style: 'margin-top:8px' },
-        '发布 +1 · 信息填写完整 +2 · 顺利完成归还 +10 · 认领通过验证 +5')));
+      h('div', { class: 'row row--between', style: 'margin-top:12px' },
+        h('div', {},
+          h('div', { class: 'small muted' }, '信用分'),
+          h('div', { class: 'row', style: 'gap:8px' },
+            h('span', { class: 'credit-score' }, String(credit.score)),
+            h('span', { class: 'chip' }, credit.band))),
+        h('div', { class: 'small muted', style: 'max-width:60%' },
+          (credit.notes || []).slice(-3).join(' · '))),
+      h('div', { class: 'form-hint', style: 'margin-top:6px' },
+        `累计获得 ${k.earned} 分 · 已兑换 ${k.spent} 分 · 发布 +1 / 完整 +2 / 归还 +10 / 认领通过 +5`),
+      h('div', { class: 'form-divider' }, '积分兑换（校园小商户）'),
+      list));
   }).catch(() => {});
+
+  /* ---------- 排行榜 ---------- */
+  api.leaderboard().then((data) => {
+    const leaders = data.leaders || [];
+    if (!leaders.length) return;
+    const board = h('div', { class: 'panel', style: 'margin-bottom:16px' },
+      h('h3', { style: 'margin:0 0 10px;font-size:16px' }, '珞珈热心榜'),
+      h('div', { class: 'hall-list' }, ...leaders.slice(0, 5).map((u, i) => h('div', { class: 'hall-item' },
+        h('span', { class: 'map-rank' }, String(i + 1)),
+        h('div', { class: 'hall-item__body' },
+          h('div', { class: 'hall-item__title' }, u.nickname),
+          h('div', { class: 'small muted' }, `${u.title} · 信用 ${u.credit}`)),
+        h('span', { class: 'chip' }, `${u.points} 分`)))));
+    listBox.before(board);
+  }).catch(() => {});
+
 
   /* ---------- 邮箱验证 ---------- */
   if (!state.user.email_verified) {
