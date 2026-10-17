@@ -1,8 +1,8 @@
 /* 我的：资料 + Karma 积分 + 校园邮箱验证 + 发布一览 */
 
-import { api } from '../api.js?v=202610171035';
-import { h, icon, toast, emptyState, fmtTime, maskPhone } from '../ui.js?v=202610171035';
-import { state, refreshUser } from '../app.js?v=202610171035';
+import { api } from '../api.js?v=202610171048';
+import { h, icon, toast, emptyState, fmtTime, maskPhone } from '../ui.js?v=202610171048';
+import { state, refreshUser } from '../app.js?v=202610171048';
 
 const STATUS_TEXT = {
   draft: '草稿', pending_confirm: '待确认', active: '在架', claiming: '认领中',
