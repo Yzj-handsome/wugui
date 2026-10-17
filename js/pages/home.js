@@ -1,12 +1,12 @@
 ﻿/* 首页：找物品（效果图主体）
    搜索区 + 筛选区 + 结果卡片区，SSE 分阶段更新（§11.4）。 */
 
-import { api, streamPreview, compressImage } from '../api.js?v=202610171035';
+import { api, streamPreview, compressImage } from '../api.js?v=202610171048';
 import {
   h, mount, icon, toast, matchCard, skeletonCards, emptyState, select, campusArt,
   tierBadge, fmtPercent, locationPicker,
-} from '../ui.js?v=202610171035';
-import { state, refreshUser, openAgent } from '../app.js?v=202610171035';
+} from '../ui.js?v=202610171048';
+import { state, refreshUser, openAgent } from '../app.js?v=202610171048';
 
 const EXAMPLES = {
   lost: [
