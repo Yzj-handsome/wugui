@@ -1,8 +1,8 @@
 /* 登录 / 注册（两个独立页面，路由 #/login 与 #/register） */
 
-import { api } from '../api.js?v=202610171035';
-import { h, icon, toast, regField, REG_RULES } from '../ui.js?v=202610171035';
-import { state, refreshUser } from '../app.js?v=202610171035';
+import { api } from '../api.js?v=202610171048';
+import { h, icon, toast, regField, REG_RULES } from '../ui.js?v=202610171048';
+import { state, refreshUser } from '../app.js?v=202610171048';
 
 function shell(main, title, subtitle) {
   const card = h('div', { class: 'auth-card' });
