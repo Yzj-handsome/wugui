@@ -1,7 +1,7 @@
 /* 校园失物地图：真实地图大屏（高德瓦片 + Leaflet）+ 热力点 */
 
-import { api } from '../api.js?v=202610171035';
-import { h, emptyState } from '../ui.js?v=202610171035';
+import { api } from '../api.js?v=202610171048';
+import { h, emptyState } from '../ui.js?v=202610171048';
 
 const CENTER = [30.5385, 114.3615];              // 武汉大学文理学部
 const M_LAT = 111320;
@@ -30,7 +30,24 @@ export async function renderMap(main) {
   const legend = h('div', { class: 'map-legend' },
     h('span', { class: 'map-legend__item' }, h('i', { class: 'map-dot map-dot--lost' }), '失物'),
     h('span', { class: 'map-legend__item' }, h('i', { class: 'map-dot map-dot--found' }), '拾物'));
-  hero.append(canvas, glass, legend);
+  /* 统一开关：一键收起所有悬浮标签（数据卡 / 图例 / 缩放按钮） */
+  const toggleBtn = h('button', {
+    class: 'map-toggle',
+    title: '显示或隐藏地图上的信息层',
+    onclick: () => {
+      const clean = hero.classList.toggle('is-clean');
+      toggleBtn.textContent = clean ? '显示信息' : '隐藏信息';
+      try { localStorage.setItem('wugui-map-clean', clean ? '1' : '0'); } catch { /* 忽略 */ }
+      if (map) window.setTimeout(() => map.invalidateSize(), 80);
+    },
+  }, '隐藏信息');
+  try {
+    if (localStorage.getItem('wugui-map-clean') === '1') {
+      hero.classList.add('is-clean');
+      toggleBtn.textContent = '显示信息';
+    }
+  } catch { /* 忽略 */ }
+  hero.append(canvas, glass, legend, toggleBtn);
   const ranking = h('div', { class: 'panel', style: 'margin-top:18px' });
 
   wrap.append(
@@ -65,8 +82,9 @@ export async function renderMap(main) {
 
   function ensureMap() {
     if (map || !window.L) return;
-    map = window.L.map(canvas, { zoomControl: true, attributionControl: true })
+    map = window.L.map(canvas, { zoomControl: false, attributionControl: true })
       .setView(CENTER, 15);
+    window.L.control.zoom({ position: 'bottomright' }).addTo(map);
     window.L.tileLayer(
       'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
       { subdomains: ['1', '2', '3', '4'], maxZoom: 19, attribution: '地图 © 高德' },
